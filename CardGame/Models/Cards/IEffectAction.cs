@@ -1,0 +1,15 @@
+﻿using CardGame.Models.Characters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CardGame.Models.Cards
+{
+    public interface IEffectAction
+    {
+        void Apply(Character source, Character target);
+
+    }
+}

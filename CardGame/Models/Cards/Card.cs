@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace CardGame.Models.Cards
 {
-    public class Card
+    public abstract class Card
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public int Cost { get; set; }
+        public bool hasDiscardAbility => OnDiscardActions.Count > 0;
 
         public List<IAction> OnPlayActions { get; set; } = new();
         public List<IAction> OnDiscardActions { get; set; } = new();

@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CardGame.Models.CommonActions
 {
-    internal interface ITargetableAction : IEffectAction
+    internal interface ITargetableAction : IAction
     {
-        bool RequiresTarget { get; }
-        void SetTarget(Character target);      // 預設 UI 用這個設定
+        Task SetTargetAsync(Func<List<Character>> getAvailableTargets);
     }
 }

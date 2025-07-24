@@ -1,4 +1,5 @@
 ﻿using CardGame.Models.Cards;
+using CardGame.Models.CommonActions;
 using CardGame.Models.Effects;
 using System;
 using System.Collections;
@@ -14,7 +15,7 @@ namespace CardGame.Models.Characters
         public string Name { get; set; }
         // 原始值（最大值）
         public int Hp { get; protected set; }
-        public int Sp { get; protected set; }
+        public int Sp { get;  set; }
         public int Kp { get; protected set; }
         public int Attack { get; protected set; }
 
@@ -36,11 +37,13 @@ namespace CardGame.Models.Characters
             Attr = new Attr(hp, attack, sp, kp);
         }
 
-        public void PlayCard(Card card, Character target)
+        public bool IsDead => Attr.Hp <= 0;
+        public async Task PlayCard(Card card)
         {
             if (Hand.Contains(card))
             {
-                card.Play(this, target);
+                Attr.Sp -= card.Cost; // 扣除 SP
+                await card.PlayAsync(this);
                 Hand.Remove(card);
                 DiscardPile.Add(card);
             }
@@ -49,14 +52,16 @@ namespace CardGame.Models.Characters
                 throw new InvalidOperationException("Card not in hand.");
             }
         }
-        public void DiscardCardAtIndex(int index)
+        public void DiscardCard(Card c)
         {
-            if (index < 0 || index >= Hand.Count)
-                throw new ArgumentOutOfRangeException(nameof(index), "指定的索引不在手牌範圍內。");
+            Hand.Remove(c);
+            DiscardPile.Add(c);
+        }
 
-            var card = Hand[index];
-            Hand.RemoveAt(index);
-            DiscardPile.Add(card);
+
+        public bool CanPlay(Card card)
+        {
+            return Sp >= card.Cost; // SP 足夠才可以打
         }
 
         public void TakeDamage(int amount)
@@ -104,7 +109,7 @@ namespace CardGame.Models.Characters
         }
 
         // 工具方法：洗牌
-        private void Shuffle(List<Card> cards)
+        protected void Shuffle(List<Card> cards)
         {
             Random rng = new Random();
             int n = cards.Count;
@@ -129,6 +134,32 @@ namespace CardGame.Models.Characters
             }
 
             return result;
+        }
+        public async Task<List<Card>> ChooseCardsAsync(int count)
+        {
+            // 示意：列出可選卡片
+            Console.WriteLine($"{Name} 的手牌：");
+            for (int i = 0; i < Hand.Count; i++)
+                Console.WriteLine($"{i}: {Hand[i].Name}");
+
+            var selected = new List<Card>();
+
+            while (selected.Count < count)
+            {
+                Console.WriteLine($"請選擇第 {selected.Count + 1} 張牌（輸入索引）:");
+                if (int.TryParse(Console.ReadLine(), out int index) &&
+                    index >= 0 && index < Hand.Count &&
+                    !selected.Contains(Hand[index]))
+                {
+                    selected.Add(Hand[index]);
+                }
+                else
+                {
+                    Console.WriteLine("無效選擇，請再試一次。");
+                }
+            }
+
+            return selected;
         }
 
 

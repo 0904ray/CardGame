@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace CardGame.Models.CommonActions
 {
-    internal interface IAction
+    public interface IAction
     {
+        Task ExecuteAsync(); 
+        string Description { get; } 
     }
+
 }

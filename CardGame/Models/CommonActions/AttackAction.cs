@@ -1,26 +1,55 @@
 ﻿using CardGame.Models.Characters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CardGame.Models.CommonActions
 {
     public class AttackAction : ITargetableAction
     {
-        private Character? target;
-        public bool RequiresTarget => true; // 這個動作需要目標
-        public void SetTarget(Character target)
+        private readonly Character _source;
+        private Character? _target;
+        private readonly int _damage;
+
+        public string Description => throw new NotImplementedException();
+
+        public AttackAction(Character source)
         {
-            this.target = target;
+            _source = source;
+            _damage = source.GetFinalAttack();
         }
 
-        public void Apply(Character source, Character target)
+        public async Task SetTargetAsync(Func<List<Character>> getAvailableTargets)
         {
-            if (target == null)
-                throw new InvalidOperationException("No target set for AttackAction.");
-            target.TakeDamage(source.GetFinalAttack());
+            var targets = getAvailableTargets();
+            // 用 Console 模擬選目標
+            Console.WriteLine("請選擇攻擊目標：");
+            for (int i = 0; i < targets.Count; i++)
+                Console.WriteLine($"{i}: {targets[i].Name} (HP: {targets[i].Attr.Hp})");
+
+            while (true)
+            {
+                var input = Console.ReadLine();
+                if (int.TryParse(input, out int idx) && idx >= 0 && idx < targets.Count)
+                {
+                    _target = targets[idx];
+                    break;
+                }
+                Console.WriteLine("輸入錯誤，請重試");
+            }
+            await Task.CompletedTask;
+        }
+
+        public async Task ExecuteAsync()
+        {
+            if (_target == null)
+            {
+                Console.WriteLine("攻擊取消，無目標");
+                return;
+            }
+            _target.TakeDamage(_damage);
+            Console.WriteLine($"{_source.Name} 攻擊了 {_target.Name} 造成 {_damage} 傷害");
+            await Task.CompletedTask;
         }
     }
 

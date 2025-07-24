@@ -22,10 +22,37 @@ namespace CardGame.Models.CommonActions
 
         public async Task ExecuteAsync()
         {
-            _source.DiscardCardAtIndex(_count - 1);
-            Console.WriteLine($"棄掉 {_count} 張卡");
-            await Task.CompletedTask;
+            if (_source == null) return;
+
+            // 讓使用者選擇要丟哪些牌
+            var cardsToDiscard = await _source.ChooseCardsAsync(_count); // List<Card>
+
+            foreach (var card in cardsToDiscard)
+            {
+                // 棄牌
+                _source.DiscardCard(card);
+
+                Console.WriteLine($"{_source.Name} 棄掉了 {card.Name}");
+
+                // 問是否要發動棄牌效果
+                if (card.OnDiscardActions != null)
+                {
+                    bool shouldActivate = true;
+
+                    Console.WriteLine($"要發動 {card.Name} 的棄牌效果嗎？(y/n)");
+                    shouldActivate = Console.ReadLine()?.ToLower() == "y";
+
+                    if (shouldActivate)
+                    {
+                        foreach (var action in card.OnDiscardActions)
+                        {
+                            ActionQueue.Instance.EnqueueFront(action); // 插到最前面
+                        }
+                    }
+                }
+            }
         }
+
     }
 
 

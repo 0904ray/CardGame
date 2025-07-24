@@ -7,18 +7,24 @@ using System.Threading.Tasks;
 
 namespace CardGame.Models.CommonActions
 {
-    public class DrawCardAction: IEffectAction
+    public class DrawCardAction: IAction
     {
-        public int Count { get; set; }
+        private readonly int _count;
+        private Character? _source;
 
-        public DrawCardAction(int count)
+        public DrawCardAction(Character? source, int count)
         {
-            Count = count;
+            this._source = source;
+            _count = count;
         }
 
-        public void Apply(Character source, Character _)
+        public string Description => throw new NotImplementedException();
+
+        public async Task ExecuteAsync()
         {
-            source.DrawCards(Count); 
+            _source?.DrawCards(_count);
+            Console.WriteLine($"抽 {_count} 張卡");
+            await Task.CompletedTask;
         }
     }
 }

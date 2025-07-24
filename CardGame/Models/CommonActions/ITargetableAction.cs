@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CardGame.Models.Cards
+namespace CardGame.Models.CommonActions
 {
     internal interface ITargetableAction : IEffectAction
     {

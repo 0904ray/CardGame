@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CardGame.Models.Cards.CommonActions
+namespace CardGame.Models.CommonActions
 {
     public class AddEffectAction : IEffectAction
     {

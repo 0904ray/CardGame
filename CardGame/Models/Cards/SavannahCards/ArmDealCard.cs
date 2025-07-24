@@ -1,5 +1,6 @@
 ﻿using CardGame.Models.Cards.CommonActions;
 using CardGame.Models.Characters;
+using CardGame.Models.CommonActions;
 using CardGame.Models.Effects;
 using System;
 using System.Collections.Generic;

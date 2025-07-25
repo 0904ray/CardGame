@@ -61,7 +61,7 @@ namespace CardGame.Models.Characters
 
         public bool CanPlay(Card card)
         {
-            return Sp >= card.Cost; // SP 足夠才可以打
+            return Attr.Sp >= card.Cost; // SP 足夠才可以打
         }
 
         public void TakeDamage(int amount)

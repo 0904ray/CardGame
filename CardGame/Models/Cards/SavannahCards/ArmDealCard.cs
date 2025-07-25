@@ -33,15 +33,18 @@ namespace CardGame.Models.Cards.SavannahCards
             if (wealthEffect != null)
             {
                 wealthEffect.Multiplier -= 1;
-
-                foreach (var action in OnPlayActions)
+                if (wealthEffect.Multiplier <= 0)
+                {
+                    source.effects.Remove(wealthEffect);
+                }
+                Console.WriteLine("排進棄排動作");
+                foreach (var action in OnDiscardActions)
                 {
                     ActionQueue.Instance.Enqueue(action);
                 }
 
-                await Task.CompletedTask;
             }
-
+            await Task.CompletedTask;
         }
     }
 

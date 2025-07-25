@@ -53,17 +53,20 @@ namespace CardGame.Models.CommonActions
             if (_target == null)
                 throw new InvalidOperationException("Target not set.");
 
+            // 找尋是否已有同種類型的效果
             var existing = _target.effects.FirstOrDefault(e => e.GetType() == _effect.GetType());
 
             if (existing != null)
             {
                 existing.Multiplier += _amount;
+                Console.WriteLine($"{_target.Name} 的 {existing.GetType().Name} 疊加 {_amount} 層，總共 {existing.Multiplier} 層");
             }
             else
             {
                 var newEffect = (Effect)Activator.CreateInstance(_effect.GetType())!;
                 newEffect.Multiplier = _amount;
                 _target.effects.Add(newEffect);
+                Console.WriteLine($"{_target.Name} 獲得新效果 {newEffect.GetType().Name}（層數: {_amount}）");
             }
 
             await Task.CompletedTask;

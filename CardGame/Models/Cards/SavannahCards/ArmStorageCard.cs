@@ -24,8 +24,9 @@ namespace CardGame.Models.Cards.SavannahCards
 
             OnDiscardActions = new List<IAction>
             {
-                new DrawCardAction(owner, 1),
-                new AddEffectAction(owner, new WealthEffect(), 1)
+                new AddEffectAction(owner, new WealthEffect(), 1),
+                new DrawCardAction(owner, 1)
+                
             };
         }
     }

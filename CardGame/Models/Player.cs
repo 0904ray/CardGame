@@ -90,7 +90,7 @@ namespace CardGame.Models
                 }
                 else
                 {
-                    Console.WriteLine("無法打出這張卡，可能因為 KP 不足或其他限制。");
+                    Console.WriteLine("無法打出這張卡，可能因為 SP 不足或其他限制。");
                 }
             }
 

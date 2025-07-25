@@ -23,7 +23,11 @@ namespace CardGame.Models.CommonActions
         public async Task ExecuteAsync()
         {
             if (_source == null) return;
-
+            if (_source.Hand.Count < _count)
+            {
+                Console.WriteLine($"{_source.Name} 的手牌不足 {_count} 張，無法執行棄牌動作。");
+                return;
+            }
             // 讓使用者選擇要丟哪些牌
             var cardsToDiscard = await _source.ChooseCardsAsync(_count); // List<Card>
 
@@ -42,13 +46,7 @@ namespace CardGame.Models.CommonActions
                     Console.WriteLine($"要發動 {card.Name} 的棄牌效果嗎？(y/n)");
                     shouldActivate = Console.ReadLine()?.ToLower() == "y";
 
-                    if (shouldActivate)
-                    {
-                        foreach (var action in card.OnDiscardActions)
-                        {
-                            ActionQueue.Instance.EnqueueFront(action); // 插到最前面
-                        }
-                    }
+                    await card.OnDiscard(_source);
                 }
             }
         }
